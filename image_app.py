@@ -14,7 +14,7 @@ from logger_setup import logger
 class ImageApp(QWidget):
     def __init__(self):
         super().__init__()
-        print("Initializing ImageApp...")
+        print("Initializing ImageApp.")
         self.sprites = []
         self.sprite_indices = []
         self.animating_labels = set()
@@ -24,7 +24,7 @@ class ImageApp(QWidget):
         # Initialize the VideoProcessor
         self.video_processor = VideoProcessor(square_size=self.square_size * 3, callback=self.load_images)
         self.video_processor.frame_ready.connect(self.update_video_label)
-        print("Starting VideoProcessor in ImageApp...")
+        print("Starting VideoProcessor in ImageApp.")
         self.video_processor.start()
 
         # Set up a timer to update sprites
@@ -33,7 +33,7 @@ class ImageApp(QWidget):
         self.sprite_timer.start(33)  # Update sprite animation at ~30 fps
 
     def initUI(self):
-        print("Setting up UI...")
+        print("Setting up UI.")
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.setWindowTitle('Image Display App')
@@ -109,7 +109,7 @@ class ImageApp(QWidget):
     def closeEvent(self, event):
         print("Close event triggered")
         if hasattr(self, 'video_processor'):
-            print("Stopping VideoProcessor...")
+            print("Stopping VideoProcessor.")
             self.video_processor.stop()
         if self.image_loader_thread is not None:
             self.image_loader_thread.quit()

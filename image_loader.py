@@ -1,4 +1,3 @@
-# image_loader.py
 from PyQt5.QtCore import QThread, pyqtSignal
 import cv2
 import numpy as np
@@ -23,7 +22,7 @@ class ImageLoader(QThread):
         self.least_similar = least_similar
 
     def run(self):
-        print('staritng load ')
+        print('starting load ')
         combined_images = self.least_similar + self.most_similar
 
         sprites = [[] for _ in range(self.num_cols * self.num_rows)]
