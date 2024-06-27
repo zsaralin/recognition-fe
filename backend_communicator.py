@@ -4,10 +4,8 @@ import requests
 import base64
 import config
 from logger_setup import logger
-from PyQt5.QtCore import QThread, QTimer
-from image_loader import ImageLoader
 
-SERVER_URL = "http://localhost:3000/get-matches"
+BASE_SERVER_URL = "http://localhost:3000"
 
 def convert_image_to_data_url(image):
     if image is None:
@@ -30,9 +28,10 @@ def send_snapshot_to_server(frame, callback):
         return None, None, False
 
     payload = {'image': image_data_url, 'numVids': config.num_vids}
+    url = f"{BASE_SERVER_URL}/get-matches"
 
     try:
-        response = requests.post(SERVER_URL, json=payload)
+        response = requests.post(url, json=payload)
         if response.status_code == 200:
             result = response.json()
             most_similar = result.get('mostSimilar')
@@ -56,3 +55,29 @@ def send_snapshot_to_server(frame, callback):
         logger.exception("Error sending snapshot to server: %s", e)
 
     return None, None, False
+
+def load_frames(frame_paths):
+    frames = []
+    for frame_path in frame_paths:
+        with open(frame_path, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            frames.append(encoded_string)
+    return frames
+
+def send_frames_to_backend(frames):
+    url = f"{BASE_SERVER_URL}/create-spritesheet"
+    payload = {'frames': frames}
+    headers = {'Content-Type': 'application/json'}
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+
+        if response.status_code == 200:
+            logger.info('Spritesheet created successfully.')
+            with open('spritesheet.png', 'wb') as f:
+                f.write(response.content)
+        else:
+            logger.error(f'Failed to create spritesheet: {response.status_code}')
+            logger.error(f'Server response: {response.text}')
+    except Exception as e:
+        logger.exception("Error sending frames to backend: %s", e)

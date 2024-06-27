@@ -17,7 +17,6 @@ class MediaPipeFaceDetection:
                 bbox = int(bboxC.xmin * w), int(bboxC.ymin * h), \
                     int(bboxC.width * w), int(bboxC.height * h)
                 break  # Assuming one face, take the first detection
-
         # Call set_curr_face with the results, frame, and callback
         set_curr_face(results, frame, callback)
 
